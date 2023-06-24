@@ -1,4 +1,3 @@
-// NOTE: Doesn't work yet, just some boilerplate JS
 const express = require('express');
 
 const app = express();
