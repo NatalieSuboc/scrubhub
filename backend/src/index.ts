@@ -2,7 +2,7 @@ const express = require('express');
 // const CreateMongoServer = require('./config/dbconfig');
 const cors = require('cors');
 
-CreateMongoServer(); // Turns on MongoDB server and connects to it
+// CreateMongoServer(); // Turns on MongoDB server and connects to it
 
 const app = express();
 app.use(cors());
