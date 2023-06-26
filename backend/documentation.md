@@ -13,6 +13,14 @@
   into JS files, and then put them in the `build` folder. If succcessful, the console should display that it connected
   to PORT 4000. For Mac, Ctrl+C works to turn off the app.
 
+### Running MongoDB
+1. Go to backend/src/dbconfig.ts
+2. Replace <password> on line 3 with the password (make sure to change it back before committing)
+3. Run as usual as above with:
+- `npx tsc`
+- `npm run build`
+inside of the backend folder
+
 Reference: https://khalilstemmler.com/blogs/typescript/node-starter-project/
 
 **Note:** The .gitignore currently ignores the `node_modules` and `build` folder created when running the app - this
