@@ -14,9 +14,11 @@
   to PORT 4000. For Mac, Ctrl+C works to turn off the app.
 
 ### Running MongoDB
-1. Go to backend/src/dbconfig.ts
-2. Replace <password> on line 3 with the password (make sure to change it back before committing)
-3. Run as usual as above with:
+1. Run 
+- `npm install mongodb`
+2. Go to backend/src/dbconfig.ts
+3. Replace <password> on line 3 with the password (make sure to change it back before committing)
+4. Run as usual as above with:
 - `npx tsc`
 - `npm run build`
 inside of the backend folder
