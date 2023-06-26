@@ -1,5 +1,7 @@
+const userMongoose = require('mongoose');
+
 // NOTE: Existing APIs already store the userid, username, and password
-const UserSchema = mongoose.Schema({
+const UserSchema = userMongoose.Schema({
     userid: {
         type: String,
         required: true,
@@ -15,4 +17,4 @@ const UserSchema = mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model("user", UserSchema);
+module.exports = userMongoose.model("user", UserSchema);

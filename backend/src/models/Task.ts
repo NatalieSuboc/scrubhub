@@ -1,4 +1,6 @@
-const TaskSchema = mongoose.Schema({
+const taskMongoose = require('mongoose');
+
+const TaskSchema = taskMongoose.Schema({
     taskid: {
         type: String,
         required: true,
@@ -31,4 +33,4 @@ const TaskSchema = mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model("task", TaskSchema);
+module.exports = taskMongoose.model("task", TaskSchema);
