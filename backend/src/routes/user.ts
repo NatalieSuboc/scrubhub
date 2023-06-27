@@ -14,11 +14,17 @@ const Task = require('../models/Task');
  * @description - creates a new user
  */
 router.post("/create", 
+    // TODO Create proper middleware function, placeholder here to pass parameter check
     function (req: Request, res: Response, next: NextFunction) {
         next();
     },
     async (req: Request, res: Response) => {
-        // TODO proper JSON body error checking
+
+        // Proper JSON body error checking
+        // Required fields: username and password
+        if (!req.body.username || !req.body.password) {
+            return res.status(400).json({ error: "Username and/or password not found"});
+        }
 
         // If user doesn't exist, create new user id and upload to db
         const userid = uuidv4();
@@ -28,7 +34,7 @@ router.post("/create",
         const password = req.body.password;
 
         // Upload other User info to db
-        const points = req.body.points;
+        const points = req.body.points ? req.body.points : 0;
         const email = req.body.email; // TODO proper email parsing
 
         try {
