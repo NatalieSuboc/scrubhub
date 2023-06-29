@@ -7,7 +7,7 @@ import axios from 'axios';
 
 export const App: React.FC = () => {
 
-  //If you comment out, imma lose moolah -> dont touch my no-no rectangle
+  //If you comment out, imma lose moolah -> dont touch my no-no rectangle, its an infinite loop of creating users
   /* var [userID, setUserID] = useState();
 
   axios.post(`http://localhost:4000/user/create`, {
