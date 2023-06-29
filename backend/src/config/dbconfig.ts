@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const MONGOURI = ""; // URI will go here when we set it up
+const MONGOURI = "mongodb+srv://scrubhub:<password>@cluster0.ok4rprp.mongodb.net/?retryWrites=true&w=majority"; // URI will go here when we set it up
 
 const CreateMongoServer = async () => {
     try {
