@@ -5,11 +5,11 @@ This assumes that npm is already installed
  1. `cd frontend`
  2. `npm i`
     installs the necessary packages
- 3. `npm run`
+ 3. `npm start`
 
 ### Run
  1. `cd frontend`
- 2. `npm run`
+ 2. `npm start`
 
 ### References
  * "./frontend/README.md"
