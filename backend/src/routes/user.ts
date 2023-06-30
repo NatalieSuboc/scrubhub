@@ -8,6 +8,10 @@ const router = express.Router();
 const User = require('../models/User');
 const Task = require('../models/Task');
 
+const middlewareFunc = function (req: Request, res: Response, next: NextFunction) {
+    next();
+};
+
 /**
  * @method - POST
  * @param - /create
@@ -15,9 +19,7 @@ const Task = require('../models/Task');
  */
 router.post("/create", 
     // TODO Create proper middleware function, placeholder here to pass parameter check
-    function (req: Request, res: Response, next: NextFunction) {
-        next();
-    },
+    middlewareFunc,
     async (req: Request, res: Response) => {
 
         // Proper JSON body error checking
@@ -60,6 +62,59 @@ router.post("/create",
             console.log(e.message);
             res.status(500).send("Error in creating user");
         }
-    })
+    }
+);
 
-    module.exports = router;
+/**
+ * @method - GET
+ * @param - /get?userid=<userid>
+ * @description - retrieves a user based on userid
+ */
+router.get("/get", middlewareFunc, 
+    async (req: Request, res: Response) => {
+        // Error checking
+        if (!req.query.userid) {
+            return res.status(400).json({ message: "No user ID specified" });
+        }
+        try {
+            const user = await User.findOne({userid: req.query.userid});
+            res.status(200).json({
+                user: {
+                    userid: user.userid,
+                    points: user.points,
+                    email: user.email
+                }
+            });
+        } catch (e: any) {
+            console.log(e);
+            res.status(500).send("Error in fetching user");
+        }
+    }
+);
+
+/**
+ * @method - PUT
+ * @param - /update?userid=<userid>
+ * @description - updates a user based on userid
+ */
+router.put("/update", middlewareFunc,
+    async (req: Request, res: Response) => {
+        // Error checking
+        if (!req.query.userid) {
+            return res.status(400).json({ message: "No user ID specified" });
+        }
+        if (!req.body) {
+            return res.status(400).json({ message: "No fields specified to update"});
+        }
+
+        try {
+            const response = await User.updateOne({ userid: req.query.userid }, req.body);
+            res.status(200).json(response);
+        } catch (e: any) {
+            console.log(e);
+            res.status(500).send("Error in fetching user");
+        }
+    }
+);
+
+module.exports = router;
