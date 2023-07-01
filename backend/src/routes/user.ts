@@ -27,7 +27,7 @@ router.post("/create",
         }
 
         // If user doesn't exist, create new user id and upload to db
-        const userid = uuidv4();
+        const userid = uuidv4.uuidv4();
 
         // TODO: Upload info to existing APIs
         const username = req.body.username;
@@ -42,7 +42,7 @@ router.post("/create",
             // TODO would check the username too once that's set up
             let user = await User.findOne({ userid });
             if (user) {
-                return res.status(400).json({ message: "User alerady exists"});
+                return res.status(400).json({ message: "User already exists"});
             }
 
             user = new User({
