@@ -31,27 +31,21 @@ router.post("/create",
         // If user doesn't exist, create new user id and upload to db
         const userid = uuidv4();
 
-        // TODO: Upload info to existing APIs
+        // Upload User info to db
         const username = req.body.username;
         const password = req.body.password;
-
-        // Upload other User info to db
         const points = req.body.points ? req.body.points : 0;
         const email = req.body.email; // TODO proper email parsing
 
         try {
             // first check if a user already exists
             // TODO would check the username too once that's set up
-            let user = await User.findOne({ userid });
+            let user = await User.findOne({ username });
             if (user) {
-                return res.status(400).json({ message: "User alerady exists"});
+                return res.status(400).json({ message: "User already exists"});
             }
 
-            user = new User({
-                userid,
-                points,
-                email
-            });
+            user = new User({ userid, username, password, points, email });
             await user.save();
 
             res.status(201).send({
@@ -81,6 +75,7 @@ router.get("/get", middlewareFunc,
             res.status(200).json({
                 user: {
                     userid: user.userid,
+                    username: user.username,
                     points: user.points,
                     email: user.email
                 }

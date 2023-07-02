@@ -7,6 +7,15 @@ const UserSchema = userMongoose.Schema({
         required: true,
         unique: true,
     },
+    username: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    password: {
+        type: String,
+        required: true
+    },
     points: {
         type: Number,
         required: true,
