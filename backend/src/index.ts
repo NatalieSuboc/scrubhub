@@ -13,7 +13,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/user", user);
-//app.use("/task", task);
+app.use("/task", task);
 
 const PORT = 4000; // Runs on PORT 4000
 
