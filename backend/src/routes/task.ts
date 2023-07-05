@@ -96,8 +96,8 @@ router.delete("/delete",
                 return res.status(400).json({ message: "Task does not exist"});
             }
             
-            let deleted = Task.deleteOne({ taskid: tid });
-            return res.status(204).json({
+            let deleted = await Task.deleteOne({ taskid: tid });
+            return res.status(202).json({
                 message: "Task successfully deleted",
                 taskid: tid,
                 acknowledged: deleted.acknowledged
@@ -123,7 +123,7 @@ router.put("/update",
         if(!req.query.taskid) {
             return res.status(400).json({ message: "Task does not exist"});
         }
-        if(!(req.query.name || req.query.description || req.query.difficulty || req.query.subtasks || req.query.pointvalue || req.query.time)) {
+        if(!(req.body.name || req.body.description || req.body.difficulty || req.body.subtasks || req.body.pointvalue || req.body.time)) {
             return res.status(400).json({ message: "No update parameter"});
         }
         const tid = req.query.taskid;
@@ -133,29 +133,24 @@ router.put("/update",
                 return res.status(400).json({ message: "Task does not exist"});
             }
 
-            let updated = Task.updateOne({ 
-                taskid: tid, 
-                name: req.body.name ? req.body.name : task.body.name,
-                description: req.body.description ? req.body.description : task.body.description,
-                difficulty: req.body.difficulty ? req.body.difficulty : task.body.difficulty,
-                subtasks: req.body.subtasks ? req.body.subtasks : task.body.subtasks,
-                pointvalue: req.body.pointvalue ? req.body.pointvalue : task.body.pointvalue,
-                time: req.body.time ? req.body.time : task.body.time
-            });
+            const updateBody = {
+                name: req.body.name ? req.body.name : task.name,
+                description: req.body.description ? req.body.description : task.description,
+                difficulty: req.body.difficulty ? req.body.difficulty : task.difficulty,
+                subtasks: req.body.subtasks ? req.body.subtasks : task.subtasks,
+                pointvalue: req.body.pointvalue ? req.body.pointvalue : task.pointvalue,
+                time: req.body.time ? req.body.time : task.time
+            };
+            let updated = await Task.updateOne({ taskid: tid }, updateBody);
             
             return res.status(200).json({
                 message: "Task successfully updated",
                 taskid: tid,
-                name: updated.name,
-                description: updated.description,
-                difficulty: updated.difficulty,
-                subtasks: updated.subtasks,
-                pointvalue: updated.pointvalue,
-                time: updated.time
+                acknowledged: updated.acknowledged
             });
         } catch (e: any) {
             console.log(e.message);
-            res.status(500).send("Error in deleting task");
+            res.status(500).send("Error in updating task");
         }
     }
 );
