@@ -1,0 +1,24 @@
+h1 {
+
+}
+
+.btn {
+    cursor: pointer;
+    border: 0;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    padding-left: 12px;
+    padding-right: 12px;
+    border-radius: 3px;
+    line-height: 1.4;
+    width: 100px;
+    height: 30px;
+  }
+
+  .btn-primary {
+    color: white;
+    background-color: #a0a0a0;
+  }
+
+  
+ 
