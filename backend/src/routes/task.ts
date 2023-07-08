@@ -76,7 +76,7 @@ router.post("/create",
 
 /**
  * @method - DELETE
- * @param - /delete
+ * @param - /delete?taskid=<taskid>
  * @description - deletes the specified task
  */
 router.delete("/delete",
@@ -111,7 +111,7 @@ router.delete("/delete",
 
 /**
  * @method - PUT
- * @param - /update
+ * @param - /update?taskid=<taskid>
  * @description - updates task
  */
 
@@ -154,6 +154,50 @@ router.put("/update",
         }
     }
 );
+
+/**
+ * @method - GET
+ * @param - /get-all?sortby=<sortby>&userid=<userid>
+ * @description - fetches all tasks sorted by specified criteria,
+ *  sortby criterion optional but userid required
+ */
+router.get("/get-all", 
+    function (req: Request, res: Response, next: NextFunction) {
+        next();
+    },
+    async (req: Request, res: Response) => {
+
+        const CRITERIA = new Set(["name", "description", "pointvalue", 
+            "time", "difficulty"]);
+
+        let criterion = req.query.sortby;
+        const userid = req.query.userid;
+
+        if (!userid) {
+            res.status(400).json({ message: "user id not specified" });
+        }
+        // TODO Check if userid is a valid userid
+        if (!criterion) {
+            // return all tasks identified with the user id
+            const tasks: String[] = [];
+
+            res.status(200).json({
+                message: "success",
+                tasks: tasks,
+            })
+        } else {
+            // Checks if criterion passed in is a valid sort value
+            if (!CRITERIA.has(String(criterion).toLowerCase())) {
+
+            } else {
+                res.status(400).json({ message: "invalid sortby criterion"});
+            }
+        }
+
+
+    }
+);
+
 module.exports = router;
 
 // taskid,
