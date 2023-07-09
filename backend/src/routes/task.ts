@@ -170,31 +170,43 @@ router.get("/get-all",
         const CRITERIA = new Set(["name", "description", "pointvalue", 
             "time", "difficulty"]);
 
-        let criterion = req.query.sortby;
+        const criterion = req.query.sortby;
         const userid = req.query.userid;
 
         if (!userid) {
-            res.status(400).json({ message: "user id not specified" });
+            return res.status(400).json({ message: "user id not specified" });
         }
         // TODO Check if userid is a valid userid
+        // TODO Repetition in fetching from db, merge into one block
         if (!criterion) {
             // return all tasks identified with the user id
-            const tasks: String[] = [];
+            try {
+                const tasks = await Task.find({userid: userid});
+                res.status(200).json({tasks: tasks});
 
-            res.status(200).json({
-                message: "success",
-                tasks: tasks,
-            })
+            } catch (e: any) {
+                console.log(e);
+                res.status(500).send("Error in fetching tasks");
+            }
         } else {
             // Checks if criterion passed in is a valid sort value
-            if (!CRITERIA.has(String(criterion).toLowerCase())) {
-
+            const c = String(criterion).toLowerCase();
+            if (CRITERIA.has(c)) {
+                // Decided to encode as String and then deserialize to cut down on if statements
+                // The '1' sorts as ascending / alphabetical
+                const optionsStr = '{"' + c + '": 1}';
+                const options = JSON.parse(optionsStr);
+                try {
+                    const tasks = await Task.find({userid: userid}).sort(options);
+                    res.status(200).json({tasks: tasks});
+                } catch (e: any) {
+                    console.log(e);
+                    res.status(500).send("Error in fetching tasks");
+                }
             } else {
-                res.status(400).json({ message: "invalid sortby criterion"});
+                return res.status(400).json({ message: "invalid sortby criterion"});
             }
         }
-
-
     }
 );
 
