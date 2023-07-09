@@ -3,6 +3,7 @@ import { NextFunction, Request, Response } from 'express';
 const { v4: uuidv4 } = require('uuid');
 const bodyParser = require('body-parser');
 const express = require('express');
+const bcrypt = require('bcryptjs');
 
 const router = express.Router();
 const User = require('../models/User');
@@ -33,7 +34,11 @@ router.post("/create",
 
         // Upload User info to db
         const username = req.body.username;
-        const password = req.body.password;
+        // Encrypt password
+        let password = req.body.password;
+        const salt = await bcrypt.genSalt(15);
+        password = await bcrypt.hash(password, salt);
+        
         const points = req.body.points ? req.body.points : 0;
         const email = req.body.email; // TODO proper email parsing
 
