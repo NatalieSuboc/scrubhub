@@ -176,7 +176,11 @@ router.get("/get-all",
         if (!userid) {
             return res.status(400).json({ message: "user id not specified" });
         }
-        // TODO Check if userid is a valid userid
+        // Check if userid is a valid userid
+        let user = await User.findOne({ userid: userid });
+        if (!user) {
+            return res.status(400).json({ message: "User does not exist"});
+        }
         // TODO Repetition in fetching from db, merge into one block
         if (!criterion) {
             // return all tasks identified with the user id
