@@ -110,6 +110,41 @@ router.delete("/delete",
 );
 
 /**
+ * @method - GET
+ * @param - /get?taskid=<taskid>
+ * @description - retrieves a task based on taskid
+ */
+router.get("/get", 
+    function (req: Request, res: Response, next: NextFunction) {
+        next();
+    }, 
+    async (req: Request, res: Response) => {
+        // Error checking
+        if (!req.query.taskid) {
+            return res.status(400).json({ message: "No task ID specified" });
+        }
+        try {
+            const task = await Task.findOne({taskid: req.query.taskid});
+            res.status(200).json({
+                task: {
+                    taskid: task.taskid,
+                    name: task.name,
+                    description: task.description,
+                    difficulty: task.difficulty,
+                    userid: task.userid,
+                    subtasks: task.subtasks,
+                    pointvalue: task.pointvalue,
+                    time: task.time
+                }
+            });
+        } catch (e: any) {
+            console.log(e);
+            res.status(500).send("Error in fetching task");
+        }
+    }
+);
+
+/**
  * @method - PUT
  * @param - /update?taskid=<taskid>
  * @description - updates task
