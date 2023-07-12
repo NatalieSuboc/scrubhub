@@ -17,6 +17,8 @@ app.use("/task", task);
 
 const PORT = 4000; // Runs on PORT 4000
 
-app.listen(PORT, (req: Express.Request, res: Express.Response) => {
+let appServer = app.listen(PORT, (req: Express.Request, res: Express.Response) => {
     console.log(`Server started at port ${PORT}`);
-})
+});
+
+module.exports = { app, appServer };
