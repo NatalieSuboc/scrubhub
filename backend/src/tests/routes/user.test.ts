@@ -1,5 +1,6 @@
 const server = require('../../index');
 const request = require('supertest');
+const bcrypt = require('bcryptjs');
 const { v4: uuidv4 } = require('uuid');
 const mCreateMongoServer = require('../../config/dbconfig');
 const User = require('../../models/User');
@@ -11,6 +12,7 @@ const mockCreateMongoServer = jest.mocked(mCreateMongoServer);
 
 // Helpful constants used in multiple tests
 const MOCK_USER_DATA = { username: "fakename", password: "password", points: 10, email: "email@email.com" };
+const MOCK_USER = new User(MOCK_USER_DATA);
 
 // Helper functions
 /**
@@ -25,7 +27,6 @@ function removeKeysFromDict(dict : {[key : string]: any}, keysToDelete : string[
     return copy;
 }
 
-// Dummy Test to check correct setup
 describe('dummy test', () => {
     test('should pass without anything', () => {
         expect(0).toBe(0);
@@ -65,10 +66,10 @@ describe('Create User API tests', () => {
         jest.resetModules();
         jest.restoreAllMocks();
     });
-    afterAll((done) => {
+    /*afterAll((done) => {
         // Shut down server after all tests are done running
         server.appServer.close(done);
-    });
+    }); */
     test('Create user test', async () => {
         // Equivalent of calling http://localhost:4000/user/create
         const response = await request(server.app).post('/user/create').send(MOCK_USER_DATA);
@@ -87,7 +88,52 @@ describe('Create User API tests', () => {
         const response = await request(server.app).post('/user/create').send(data);
         expect(response.status).toEqual(400);
     });
+});
 
+describe('Sign in user API tests', () => {
+    beforeEach(() => {
+        // Note: This is the same setup for create user testing, but after user
+        // creation we have to change some of the mocks since signing in is different 
+        // Note 2: Is this too vague??
+        User.findOne = jest.fn().mockReturnValueOnce(null);
+        uuidv4.uuidv4 = jest.fn().mockReturnValue("1");
+        User.prototype.save = jest.fn().mockImplementation(() => {});
+    });
+    afterEach(() => {
+        jest.resetModules();
+        jest.restoreAllMocks();
+    });
+    test('Signin user test', async() => {
+        // First need to create a user before testing their sign in
+        const createUserResponse = await request(server.app).post('/user/create').send(MOCK_USER_DATA);
+        expect(createUserResponse.status).toEqual(201);
+
+        // Mocks are changed here to test the signin now
+        MOCK_USER["userid"] = "1";
+        User.findOne = jest.fn().mockReturnValueOnce(MOCK_USER);
+        bcrypt.compare = jest.fn().mockReturnValue(true);
+
+        const data = removeKeysFromDict(MOCK_USER_DATA, ["points", "email"]);
+        const response = await request(server.app).post('/user/signin').send(data);
+        expect(response.status).toEqual(200);
+        expect(response.body.userid).toEqual("1");
+        expect(response.body.token).toBeTruthy(); // Checks for token's presence
+
+        delete MOCK_USER["userid"];
+    });
+});
+
+describe('Get user API tests', () => {
+
+});
+
+describe('Update user API tests', () => {
+
+});
+
+afterAll((done) => {
+    // Shut down server after all tests are done running
+    server.appServer.close(done);
 });
 
 module.exports = {};
