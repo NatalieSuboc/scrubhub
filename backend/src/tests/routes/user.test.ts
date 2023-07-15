@@ -11,7 +11,7 @@ jest.mock('../../config/dbconfig');
 const mockCreateMongoServer = jest.mocked(mCreateMongoServer);
 
 // Helpful constants used in multiple tests
-const MOCK_USER_DATA = { username: "fakename", password: "password", points: 10, email: "email@email.com" };
+const MOCK_USER_DATA = { username: "fakename", password: "password", userid: "1", points: 10, email: "email@email.com" };
 const MOCK_USER = new User(MOCK_USER_DATA);
 
 // Helper functions
@@ -39,12 +39,12 @@ describe('Helper function tests', () => {
         const copy = removeKeysFromDict(MOCK_USER_DATA, keysToDelete);
 
         // Checks if copy is correct
-        expect(Object.keys(copy).length).toBe(2);
+        expect(Object.keys(copy).length).toBe(3);
         expect(copy["points"]).toBe(10);
         expect(copy["email"]).toBe("email@email.com");
 
         // Checks if original is unaltered
-        expect(Object.keys(MOCK_USER_DATA).length).toBe(4);
+        expect(Object.keys(MOCK_USER_DATA).length).toBe(5);
         expect(MOCK_USER_DATA["username"]).toBe("fakename");
         expect(MOCK_USER_DATA["password"]).toBe("password");
     });
@@ -52,6 +52,7 @@ describe('Helper function tests', () => {
 
 describe('Create User API tests', () => {
     beforeEach(() => {
+        // TODO Might not need this
         // "Mocked" data and db
         const mockDB = { query: jest.fn().mockResolvedValueOnce(MOCK_USER_DATA) };
         mockCreateMongoServer.mockResolvedValueOnce(mockDB);
@@ -66,10 +67,6 @@ describe('Create User API tests', () => {
         jest.resetModules();
         jest.restoreAllMocks();
     });
-    /*afterAll((done) => {
-        // Shut down server after all tests are done running
-        server.appServer.close(done);
-    }); */
     test('Create user test', async () => {
         // Equivalent of calling http://localhost:4000/user/create
         const response = await request(server.app).post('/user/create').send(MOCK_USER_DATA);
@@ -103,23 +100,35 @@ describe('Sign in user API tests', () => {
         jest.resetModules();
         jest.restoreAllMocks();
     });
-    test('Signin user test', async() => {
+    test('Sign in user test', async() => {
         // First need to create a user before testing their sign in
         const createUserResponse = await request(server.app).post('/user/create').send(MOCK_USER_DATA);
         expect(createUserResponse.status).toEqual(201);
 
         // Mocks are changed here to test the signin now
-        MOCK_USER["userid"] = "1";
         User.findOne = jest.fn().mockReturnValueOnce(MOCK_USER);
-        bcrypt.compare = jest.fn().mockReturnValue(true);
-
         const data = removeKeysFromDict(MOCK_USER_DATA, ["points", "email"]);
+        // Does a direct equality check since the hashed + salted password does not end up being stored in the db
+        bcrypt.compare = jest.fn().mockReturnValueOnce(MOCK_USER_DATA.password == data.password);
+
         const response = await request(server.app).post('/user/signin').send(data);
         expect(response.status).toEqual(200);
         expect(response.body.userid).toEqual("1");
         expect(response.body.token).toBeTruthy(); // Checks for token's presence
+    });
+    test('Sign in user incorrect password test', async() => {
+        // Create user
+        const createUserResponse = await request(server.app).post('/user/create').send(MOCK_USER_DATA);
+        expect(createUserResponse.status).toEqual(201);
 
-        delete MOCK_USER["userid"];
+        // Sign in user
+        User.findOne = jest.fn().mockReturnValueOnce(MOCK_USER);
+        const data = removeKeysFromDict(MOCK_USER_DATA, ["points", "email"]);
+        data["password"] = "bad password";
+        bcrypt.compare = jest.fn().mockReturnValueOnce(MOCK_USER_DATA.password == data.password);
+
+        const response = await request(server.app).post('/user/signin').send(data);
+        expect(response.status).toEqual(400);
     });
 });
 
