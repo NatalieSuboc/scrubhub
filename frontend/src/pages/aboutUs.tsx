@@ -7,12 +7,17 @@ import { Link } from 'react-router-dom';
 export const AboutUs: React.FC = () => {
 
     return (
-        <div className="App">
-          <header className="App-header">
-            <p>About Us</p>
-            <Link to="/">go back</Link>
-          </header>
-        </div>
+      <div>
+        <h1>About Us</h1>
+        <a href="/"><button className="btn btn-primary">Return to Home</button></a>
+      </div>
+
+        // <div className="App">
+        //   <header className="App-header">
+        //     <p>About Us</p>
+        //     <Link to="/">go back</Link>
+        //   </header>
+        // </div>
       );
 };
 
