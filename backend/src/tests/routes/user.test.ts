@@ -133,7 +133,42 @@ describe('Sign in user API tests', () => {
 });
 
 describe('Get user API tests', () => {
+    beforeEach(() => {
+        User.findOne = jest.fn().mockReturnValueOnce(null);
+        uuidv4.uuidv4 = jest.fn().mockReturnValue("1");
+        User.prototype.save = jest.fn().mockImplementation(() => {});
+    });
+    afterEach(() => {
+        jest.resetModules();
+        jest.restoreAllMocks();
+    });
+    test('Get user test', async() => {
+        // Create user
+        const createUserResponse = await request(server.app).post('/user/create').send(MOCK_USER_DATA);
+        expect(createUserResponse.status).toEqual(201);
+        // Sign in user
+        User.findOne = jest.fn().mockReturnValue(MOCK_USER);
+        const data = removeKeysFromDict(MOCK_USER_DATA, ["points", "email"]);
+        bcrypt.compare = jest.fn().mockReturnValueOnce(MOCK_USER_DATA.password == data.password);
+        const signinUserResponse = await request(server.app).post('/user/signin').send(data);
+        expect(signinUserResponse.status).toEqual(200);
+        expect(signinUserResponse.body.token).toBeTruthy();
+        // Get user
+        const token = signinUserResponse.body.token;
+        const userid = signinUserResponse.body.userid;
+        const response = await request(server.app).get(`/user/get?userid=${userid}`).set('token', token);
 
+        expect(response.status).toEqual(200);
+        expect(response.body.user.userid).toBe("1");
+        expect(response.body.user.username).toBe("fakename");
+        // I got too lazy to do the rest of the fields, sorry!
+    });
+    test('Get user without signing in test', async() => {
+
+    });
+    test('Get user without userid given test', async() => {
+
+    });
 });
 
 describe('Update user API tests', () => {
