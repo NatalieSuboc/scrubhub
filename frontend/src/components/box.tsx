@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+//import React, { useEffect } from "react";
 import "./box.css";
 
 //remove this component entirely after demo
