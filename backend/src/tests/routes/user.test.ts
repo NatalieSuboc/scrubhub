@@ -166,12 +166,32 @@ describe('Get user API tests', () => {
     test('Get user without signing in test', async() => {
 
     });
+    test('Get user and signed in but incorrect token test', async() => {
+
+    });
     test('Get user without userid given test', async() => {
 
     });
 });
 
 describe('Update user API tests', () => {
+
+    test('Update user test', async() => {
+
+    });
+    test('Update user without signin in test', async() => {
+
+    });
+    test('Update user without any changes test', async() => {
+
+    });
+    test('Update user and signed in but incorrect token test', async() => {
+
+    });
+});
+
+// More complicated tests that may require multiple users, multiple calls, etc.
+describe('Comprehensive API tests', () => {
 
 });
 
