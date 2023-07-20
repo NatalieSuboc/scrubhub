@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
 import { Box } from "./components/box";
+import Timer from "./components/pomodoro/Timer";
 import { useNavigate } from 'react-router-dom';
 
 //import { useState } from 'react';
@@ -31,6 +32,7 @@ export const Home: React.FC = () => {
           <button onClick={gotToTaskList}>Task List </button>
         {/* </header> */}
         <Box/>
+        {/*<Timer minutes={25} seconds={30}></Timer> */}
       </div>
     );
 };
