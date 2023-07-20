@@ -1,7 +1,8 @@
-import { useRef, useState, useEffect, EventHandler } from 'react';
+import { useState, useEffect } from 'react';
 import './Timer.css';
 
 const ONE_SECOND = 1000;
+const SECONDS_IN_A_MINUTE = 60;
 
 interface ITimerProps {
   minutes: number,
@@ -10,19 +11,43 @@ interface ITimerProps {
 
 const Timer = (props: ITimerProps) => {
 
-  const { minutes, seconds } = props; // destructured props
+  const { minutes, seconds } = props; // destructured props passed in
 
-  const [mins, setMins] = useState(minutes);
-  const [secs, setSecs] = useState(seconds);
+  const [totalSeconds, setTotalSeconds] = useState(seconds + minutes * SECONDS_IN_A_MINUTE);
+  const [play, setPlay] = useState(false);
 
   useEffect(() => {
-      secs > 0 && setTimeout(() => setSecs(secs - 1), ONE_SECOND);
-    }, [secs]);
+        if (!play) { return; }
+        totalSeconds > 0 && setTimeout(() => setTotalSeconds(totalSeconds - 1), ONE_SECOND);
+    }, [totalSeconds, play]);
+
+  // Triggers time to alternate between start and stop
+  const triggerTimer = (() => { 
+    setPlay(!play); 
+  });
+
+  // TODO The timer is slightly inprecise and will continue the countdown for 1 second
+  // after the Pause button is hit, fix later
+  const getTimeRemaining = (() => {
+    // Ex: 130 seconds -> 2 minutes (floor(130/60)), 10 seconds (130 % 60)
+    const total = totalSeconds;
+    const m = Math.floor(total / SECONDS_IN_A_MINUTE);
+    const s = total % SECONDS_IN_A_MINUTE;
+    return { minutes: m, seconds: s };
+  });
+
+  const formattedTimeRemaining = (() => {
+    const { minutes, seconds } = getTimeRemaining();
+    const formattedMins = minutes >= 10 ? minutes : '0' + minutes;
+    const formattedSecs = seconds >= 10 ? seconds: '0' + seconds;
+    let time = formattedMins + ":" + formattedSecs;
+    return time;
+  });
 
   return (
     <div className="timer">
-      <input type="button" value="Start" />
-      <h1>{mins >= 10 ? mins : '0' + mins}:{secs >= 10 ? secs : '0' + secs}</h1>
+      <h1>{formattedTimeRemaining()}</h1>
+      <input type="button" value={play ? "Pause" : "Start"} onClick={triggerTimer} />
     </div>
   );
 };

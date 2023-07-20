@@ -32,7 +32,12 @@ export const Home: React.FC = () => {
           <button onClick={gotToTaskList}>Task List </button>
         {/* </header> */}
         <Box/>
-        {/*<Timer minutes={25} seconds={30}></Timer> */}
+        <Timer minutes={25} seconds={30}></Timer>
+        <br></br>
+        <Timer minutes={5} seconds={0}></Timer>
+        <br></br>
+        <Timer minutes={15} seconds={0}></Timer>
+        <br></br>
       </div>
     );
 };
