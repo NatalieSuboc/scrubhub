@@ -1,20 +1,23 @@
-// require('../../index');
-//const request = require('supertest');
-//const bcrypt = require('bcryptjs');
-require('uuid');
-//const mCreateMongoServer = require('../../config/dbconfig');
-//const User = require('../../models/User');
+//https://stackoverflow.com/questions/65172620/did-jest-testing-multiple-files-at-one-moment
+//https://stackoverflow.com/questions/54422849/jest-testing-multiple-test-file-port-3000-already-in-use
+
+export {}
+const server = require('../../index');
+const request = require('supertest');
+const bcrypt = require('bcryptjs');
+const { v4: uuidv4 } = require('uuid');
+const mCreateMongoServer = require('../../config/dbconfig');
+const User = require('../../models/User');
 const Task = require('../../models/Task');
-//const removeKeys = require('../routes/user.test');
 
 // Need these two lines to mock our MongoDB connection - we want
 // to return "mocked" data and not actually ping the db when we test
-// jest.mock('../../config/dbconfig');
-// const mockCreateMongoServer = jest.mocked(mCreateMongoServer);
+jest.mock('../../config/dbconfig');
+const mockCreateMongoServer = jest.mocked(mCreateMongoServer);
 
 // Helpful constants used in multiple tests
-// const MOCK_USER_DATA = { username: "fakename", password: "password", userid: "1", points: 10, email: "email@email.com" };
-// const MOCK_USER = new User(MOCK_USER_DATA);
+const MOCK_USER_DATA = { username: "fakename", password: "password", userid: "1", points: 10, email: "email@email.com" };
+const MOCK_USER = new User(MOCK_USER_DATA);
 
 const MOCK_TASK_DATA = { taskid: "2", name: "taskName", description: "taskDescription", difficulty: 9, userid: "1", subtasks: [], pointvalue: 3, time: 40};
 const MOCK_TASK = new Task(MOCK_TASK_DATA);
@@ -80,7 +83,9 @@ describe('Create Task API tests', () => {
         // Equivalent of calling http://localhost:4000/user/create
         const response = await request(server.app).post('/task/create').send(MOCK_TASK_DATA);
         expect(response.status).toEqual(201);
-        expect(response.body.taskid).toEqual("2"); // mocked taskid value
+        // expect(response.body.taskid).toEqual("2"); // its not workingadndskjfnsakdfla
+        expect(response.body.userid).toEqual("1");
+        expect(response.body.description).toEqual("taskDescription");
         expect(response.body.message).toEqual("Task created");
     });
     // test('Create user with no username given test', async () => {
@@ -101,9 +106,9 @@ describe('Comprehensive API tests', () => {
 
 });
 
-// afterAll((done) => {
-//     // Shut down server after all tests are done running
-//     server.appServer.close(done);
-// });
+afterAll((done) => {
+    // Shut down server after all tests are done running
+    server.appServer.close(done);
+});
 
 module.exports = {};

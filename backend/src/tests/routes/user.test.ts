@@ -1,3 +1,4 @@
+export {}
 const server = require('../../index');
 const request = require('supertest');
 const bcrypt = require('bcryptjs');
