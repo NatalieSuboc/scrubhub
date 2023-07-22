@@ -4,7 +4,7 @@
 export {}
 const server = require('../../index');
 const request = require('supertest');
-const bcrypt = require('bcryptjs');
+// const bcrypt = require('bcryptjs');
 const { v4: uuidv4 } = require('uuid');
 const mCreateMongoServer = require('../../config/dbconfig');
 const User = require('../../models/User');
@@ -16,8 +16,8 @@ jest.mock('../../config/dbconfig');
 const mockCreateMongoServer = jest.mocked(mCreateMongoServer);
 
 // Helpful constants used in multiple tests
-const MOCK_USER_DATA = { username: "fakename", password: "password", userid: "1", points: 10, email: "email@email.com" };
-const MOCK_USER = new User(MOCK_USER_DATA);
+// const MOCK_USER_DATA = { username: "fakename", password: "password", userid: "1", points: 10, email: "email@email.com" };
+// const MOCK_USER = new User(MOCK_USER_DATA);
 
 const MOCK_TASK_DATA = { taskid: "2", name: "taskName", description: "taskDescription", difficulty: 9, userid: "1", subtasks: [], pointvalue: 3, time: 40};
 const MOCK_TASK = new Task(MOCK_TASK_DATA);
@@ -81,24 +81,111 @@ describe('Create Task API tests', () => {
     });
     test('Create task test', async () => {
         // Equivalent of calling http://localhost:4000/user/create
-        const response = await request(server.app).post('/task/create').send(MOCK_TASK_DATA);
+        //const temp = await request(server.app).post('/task/create').send(MOCK_USER_DATA);
+        const response = await request(server.app).post('/task/create?userid="1"').send(MOCK_TASK_DATA);
         expect(response.status).toEqual(201);
         // expect(response.body.taskid).toEqual("2"); // its not workingadndskjfnsakdfla
+
+        // Expected: "2"
+        // Received: "81ebe9d6-7783-4d4e-aed0-59c4a6e5c156"
+
         expect(response.body.userid).toEqual("1");
         expect(response.body.description).toEqual("taskDescription");
         expect(response.body.message).toEqual("Task created");
     });
-    // test('Create user with no username given test', async () => {
-    //     const data = removeKeysFromDict(MOCK_USER_DATA, ["username"]);
-    //     const response = await request(server.app).post('/user/create').send(data);
-    //     expect(response.status).toEqual(400);
+    test('Create task with no userid given test', async () => {
+        const data = removeKeysFromDict2(MOCK_TASK_DATA, ["userid"]);
+        const response = await request(server.app).post('/task/create').send(data);
+        expect(response.status).toEqual(400);
+    });
+});
 
-    // });
-    // test('Create user with no password given test', async () => {
-    //     const data = removeKeysFromDict(MOCK_USER_DATA, ["password"]);
-    //     const response = await request(server.app).post('/user/create').send(data);
-    //     expect(response.status).toEqual(400);
-    // });
+describe('Get task API tests', () => {
+    beforeEach(() => {
+        Task.findOne = jest.fn().mockReturnValueOnce(null);
+        uuidv4.uuidv4 = jest.fn().mockReturnValue("2");
+        Task.prototype.save = jest.fn().mockImplementation(() => {});
+    });
+    afterEach(() => {
+        jest.resetModules();
+        jest.restoreAllMocks();
+    });
+    test('Get task test', async() => {
+        // Create task
+        const createTaskResponse = await request(server.app).post('/task/create').send(MOCK_TASK_DATA);
+        expect(createTaskResponse.status).toEqual(201);
+        // console.log(createTaskResponse.body.taskid);
+
+        // const taskid = createTaskResponse.body.taskid;
+        // console.log(taskid);
+        // const response = await request(server.app).get(`/task/get?taskid=${taskid}`);
+        // //Check fields to be the corrrect task
+        // expect(response.status).toEqual(200);
+        // // expect(response.body.task.taskid).toBe("2");
+        // expect(response.body.task.name).toBe("taskName");
+        // expect(response.body.task.description).toBe("taskDescription");
+        // expect(response.body.task.difficulty).toBe(9);
+        // expect(response.body.task.userid).toBe("1");
+        // expect(response.body.task.subtasks).toBe([]);
+        // expect(response.body.task.pointValue).toBe(3);
+        // expect(response.body.task.time).toBe(40);        
+    });
+    test('Get task without taskid given test', async() => {
+        const createTaskResponse = await request(server.app).post('/task/create').send(MOCK_TASK_DATA);
+        expect(createTaskResponse.status).toEqual(201);
+
+        // const taskid = null;
+        const response = await request(server.app).get(`/task/get`);
+        expect(response.status).toEqual(400);
+    });
+    test('Get task with error in taskid', async() =>{
+        const createTaskResponse = await request(server.app).post('/task/create').send(MOCK_TASK_DATA);
+        expect(createTaskResponse.status).toEqual(201);
+
+        const taskid = null;
+        const response = await request(server.app).get(`/task/get?taskid=${taskid}`);
+        expect(response.status).toEqual(500);
+    });
+    test('Get all tasks', async() =>{
+
+    });
+});
+
+describe('Update task API tests', () => {
+    beforeEach(() => {
+        Task.findOne = jest.fn().mockReturnValueOnce(null);
+        uuidv4.uuidv4 = jest.fn().mockReturnValue("2");
+        Task.prototype.save = jest.fn().mockImplementation(() => {});
+    });
+    afterEach(() => {
+        jest.resetModules();
+        jest.restoreAllMocks();
+    });
+    test('Update task test', async() => {
+        const createTaskResponse = await request(server.app).post('/task/create').send(MOCK_TASK_DATA);
+        expect(createTaskResponse.status).toEqual(201);
+
+        const taskid = createTaskResponse.taskid;
+        const response = await request(server.app).get(`/task/update?taskid=${taskid}`);
+        expect(response.status).toEqual(201);
+
+        const newUpdate = {name: "newName"};
+        const update = response.push(newUpdate);
+        expect(update.status).toEqual(200);
+    });
+    test('Update but no updates test',  async() => {
+        const createTaskResponse = await request(server.app).post('/task/create').send(MOCK_TASK_DATA);
+        expect(createTaskResponse.status).toEqual(201);
+
+        // const taskid = createTaskResponse.taskid;
+        // const response = await request(server.app).get(`/task/get?taskid=${taskid}`);
+        // expect(response.status).toEqual(201);
+
+        // const newUpdate = {};
+        // const update = await request(server.app).get(`/task/update?taskid=${taskid}`, newUpdate);
+        // // const update = response.push(newUpdate);
+        // expect(update.status).toEqual(400);
+    });
 });
 
 // More complicated tests that may require multiple users, multiple calls, etc.

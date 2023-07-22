@@ -170,9 +170,6 @@ describe('Get user API tests', () => {
     test('Get user and signed in but incorrect token test', async() => {
 
     });
-    test('Get user without userid given test', async() => {
-
-    });
 });
 
 describe('Update user API tests', () => {
