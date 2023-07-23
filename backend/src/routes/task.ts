@@ -26,7 +26,7 @@ router.post("/create",
         }
 
         // If task doesn't exist, create new task id and upload to db
-        const taskid = uuidv4();
+        const taskid = uuidv4.uuidv4();
 
         // Upload other task info to db
         const name = req.body.name ? req.body.name : "untitled";
