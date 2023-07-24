@@ -34,7 +34,7 @@ router.post("/create",
         }
 
         // If user doesn't exist, create new user id and upload to db
-        const userid = uuidv4.uuidv4();
+        const userid = uuidv4();
 
         // Upload User info to db
         const username = req.body.username;
