@@ -26,6 +26,11 @@ const Timer = (props: ITimerProps) => {
     setPlay(!play); 
   });
 
+  // Reset timer to original value
+  const resetTimer = (() => {
+    setTotalSeconds(seconds + minutes * SECONDS_IN_A_MINUTE);
+  });
+
   // TODO The timer is slightly inprecise and will continue the countdown for 1 second
   // after the Pause button is hit, fix later
   const getTimeRemaining = (() => {
@@ -48,6 +53,7 @@ const Timer = (props: ITimerProps) => {
     <div className="timer">
       <h1>{formattedTimeRemaining()}</h1>
       <input type="button" value={play ? "Pause" : "Start"} onClick={triggerTimer} />
+      <input type="button" value="Reset" onClick={resetTimer} />
     </div>
   );
 };
