@@ -17,7 +17,9 @@ const mockCreateMongoServer = jest.mocked(mCreateMongoServer);
 // const MOCK_USER = new User(MOCK_USER_DATA);
 
 const MOCK_TASK_DATA = { taskid: "2", name: "taskName", description: "taskDescription", difficulty: 9, userid: "1", subtasks: [], pointvalue: 3, time: 40};
+const MOCK_TASK_DATA2 = { taskid: "2", name: "newName", description: "taskDescription", difficulty: 9, userid: "1", subtasks: [], pointvalue: 3, time: 40};
 const MOCK_TASK = new Task(MOCK_TASK_DATA);
+const MOCK_TASK2 = new Task(MOCK_TASK_DATA);
 
 // Helper functions
 /**
@@ -93,6 +95,7 @@ describe('Create Task API tests', () => {
     });
 });
 
+//Need to test no matching taskid
 describe('Get task API tests', () => {
     beforeEach(() => {
         Task.findOne = jest.fn().mockReturnValueOnce(null);
@@ -138,8 +141,7 @@ describe('Get task API tests', () => {
         const createTaskResponse = await request(server.app).post('/task/create').send(MOCK_TASK_DATA);
         expect(createTaskResponse.status).toEqual(201);
 
-        // Task.findOne = jest.fn().mockReturnValue(MOCK_TASK);    //Come back to this
-        // Task.findOne.taskid = "3";
+        Task.findOne = jest.fn(() => { throw new Error("message"); });
         const taskid = "3";
         const response = await request(server.app).get(`/task/get?taskid=${taskid}`);
         expect(response.status).toEqual(500);
@@ -163,26 +165,33 @@ describe('Update task API tests', () => {
         const createTaskResponse = await request(server.app).post('/task/create').send(MOCK_TASK_DATA);
         expect(createTaskResponse.status).toEqual(201);
 
-        // const taskid = createTaskResponse.taskid;
-        // const response = await request(server.app).get(`/task/update?taskid=${taskid}`);
-        // expect(response.status).toEqual(201);
+        const taskChanges = {
+            name: "newName"
+        }
 
-        // const newUpdate = {name: "newName"};
-        // const update = response.push(newUpdate);
-        // expect(update.status).toEqual(200);
+        Task.updateOne = jest.fn().mockReturnValue({ acknowledged: true });
+        Task.findOne = jest.fn().mockReturnValue(MOCK_TASK);
+        const taskid = createTaskResponse.body.taskid;
+
+        const taskUpdate = await request(server.app).put(`/task/update?taskid=${taskid}`).send(taskChanges);
+        expect(taskUpdate.status).toEqual(200);
+        
+        Task.findOne = jest.fn().mockReturnValue(MOCK_TASK2);
+        const response = await request(server.app).get(`/task/get?taskid=${taskid}`);
+        expect(response.status).toEqual(200);
+
+        // expect(response.body.name).toBe("newName");
     });
-    test('Update but no updates test',  async() => {
+    test('Update but no update parameter test',  async() => {
         const createTaskResponse = await request(server.app).post('/task/create').send(MOCK_TASK_DATA);
         expect(createTaskResponse.status).toEqual(201);
 
-        // const taskid = createTaskResponse.taskid;
-        // const response = await request(server.app).get(`/task/get?taskid=${taskid}`);
-        // expect(response.status).toEqual(201);
+        Task.findOne = jest.fn().mockReturnValue(MOCK_TASK);
+        const taskid = createTaskResponse.body.taskid;
 
-        // const newUpdate = {};
-        // const update = await request(server.app).get(`/task/update?taskid=${taskid}`, newUpdate);
-        // // const update = response.push(newUpdate);
-        // expect(update.status).toEqual(400);
+        const taskUpdate = await request(server.app).put(`/task/update?taskid=${taskid}`).send({});
+        expect(taskUpdate.status).toEqual(400);
+        expect(taskUpdate.body.message).toEqual("No update parameter");
     });
 });
 
