@@ -1,43 +1,38 @@
 import React from 'react';
 import './App.css';
 import { Box } from "./components/box";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { AboutUs } from "../src/pages/aboutUs";
-import { TaskList } from "../src/pages/taskList";
-import { Home } from "./Home";
+import { useNavigate } from 'react-router-dom';
 
 //import { useState } from 'react';
 //import axios from 'axios';
 
 
-export const App: React.FC = () => {
+export const Home: React.FC = () => {
 
-  //If you comment out, imma lose moolah -> dont touch my no-no rectangle, its an infinite loop of creating users
-  /* var [userID, setUserID] = useState();
-
-  axios.post(`http://localhost:4000/user/create`, {
-    username: "test",
-    password: "password"
-  }).then((body) => {
-      console.log(body);
-      setUserID(body.data.userid);
-      console.log("Successfully made a user");
-
-  }), (err : any) => {
-    console.log("Error: " + err);
-  }; */
-
-  return (
-    // <div>
-      <Router>
-        <Routes>
-          <Route path= "aboutUsPage" element = {<AboutUs/>}/>
-          <Route path= "taskListPage" element = {<TaskList/>}/>
-          <Route path="/" element={<Home/>}/>
-        </Routes>
-      </Router>
-    // </div>
-  );
+    const navigate = useNavigate();
+  
+    const goToAboutUs = () => {
+    
+      // This will navigate to second component
+      navigate('aboutUsPage'); 
+    };
+    const gotToTaskList = () => {
+    
+      // This will navigate to first component
+      navigate('taskListPage'); 
+    };
+    
+    return (
+      <div className="App">
+          <h1>ScrubHub (Temporary Name)</h1>
+          {/* <a href="taskList.html"><button className="btn btn-primary">Task List</button></a> */}
+          <button onClick={goToAboutUs}> About Us </button>
+          {/* <a href="aboutUs.html"><button className="btn btn-primary">About Us</button></a> */}
+          <button onClick={gotToTaskList}>Task List </button>
+        {/* </header> */}
+        <Box/>
+      </div>
+    );
 };
 
 /*
@@ -83,4 +78,4 @@ export const App: React.FC = () => {
 //   );
 // }
 
-export default App;
+export default Home;
