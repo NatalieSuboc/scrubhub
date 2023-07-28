@@ -1,7 +1,3 @@
-h1 {
-
-}
-
 .btn {
     cursor: pointer;
     border: 0;
@@ -19,6 +15,34 @@ h1 {
     color: white;
     background-color: #a0a0a0;
   }
+
+  ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #b3ceb3;
+  }
+
+  li {
+    float: left;
+    border-right: 1px  solid white;
+  }
+
+  li a {
+    display: block;
+    color: white; /*sets text color*/
+    padding: 14px 16px;
+    text-decoration: none; /*gets rid of lines underneath navbar option*/
+    text-align: center;
+  }
+
+  h1 {
+    color:black;
+    text-decoration: none;
+
+  }
+
 
   
  
