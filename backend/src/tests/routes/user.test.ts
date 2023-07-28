@@ -51,6 +51,9 @@ describe('Helper function tests', () => {
     });
 });
 
+// IMPORTANT: uuidv4 function is globally mocked to return "1"
+jest.mock('uuid', () => ({ v4: () => "1" }));
+
 describe('Create User API tests', () => {
     beforeEach(() => {
         // TODO Might not need this
@@ -61,7 +64,6 @@ describe('Create User API tests', () => {
         // Usually these functions have a different implementation, but for testing purposes
         // they've been modified to return certain values
         User.findOne = jest.fn().mockReturnValueOnce(null);
-        uuidv4.uuidv4 = jest.fn().mockReturnValue("1");
         User.prototype.save = jest.fn().mockImplementation(() => {});
     });
     afterEach(() => {
@@ -221,31 +223,67 @@ describe('Update user API tests', () => {
         expect(signinUserResponse.status).toEqual(200);
         expect(signinUserResponse.body.token).toBeTruthy();
         // Update fields
-        const updateFields = { username: "username2", points: 10 };
         const updatedUserData = {
-            username: updateFields.username, 
-            password: MOCK_USER.password,
-            points: updateFields.points,
-            email: MOCK_USER.email,
+            username: "username2", 
+            password: "password",
+            points: 10,
+            email: "email@email.com"
         };
         User.updateOne = jest.fn().mockReturnValue({acknowledged: true});
         const userid = createUserResponse.body.userid;
         const token = signinUserResponse.body.token;
         const updateUserResponse = await request(server.app).put(`/user/update?userid=${userid}`)
-            .set('token', token).send(updatedUserData);
-        console.log(updateUserResponse);
+            .send(updatedUserData).set('token', token);
         expect(updateUserResponse.status).toEqual(200);
         expect(updateUserResponse.body.acknowledged).toEqual(true);
 
     });
     test('Update user without signin in test', async() => {
-
+        // Create user
+        const createUserResponse = await request(server.app).post('/user/create').send(MOCK_USER_DATA);
+        expect(createUserResponse.status).toEqual(201);
+        // Try to update without signing in
+        const data = { username: "username2" };
+        User.updateOne = jest.fn().mockReturnValue({acknowledged: true});
+        const response = await request(server.app).put(`/user/update?userid=${createUserResponse.body.userid}`)
+            .send(data);
+        expect(response.status).toEqual(401);
     });
     test('Update user without any changes test', async() => {
-
+        // Setup - create and sign-in user
+        // Create user
+        const createUserResponse = await request(server.app).post('/user/create').send(MOCK_USER_DATA);
+        expect(createUserResponse.status).toEqual(201);
+        // Sign in user
+        User.findOne = jest.fn().mockReturnValue(MOCK_USER);
+        const data = removeKeysFromDict(MOCK_USER_DATA, ["points", "email"]);
+        bcrypt.compare = jest.fn().mockReturnValueOnce(MOCK_USER_DATA.password == data.password);
+        const signinUserResponse = await request(server.app).post('/user/signin').send(data);
+        expect(signinUserResponse.status).toEqual(200);
+        expect(signinUserResponse.body.token).toBeTruthy();
+        // Update user without changes
+        User.updateOne = jest.fn().mockReturnValue({acknowledged: true});
+        const userid = createUserResponse.body.userid;
+        const token = signinUserResponse.body.token;
+        const updateUserResponse = await request(server.app).put(`/user/update?userid=${userid}`).set('token', token);
+        expect(updateUserResponse.status).toEqual(400);
     });
     test('Update user and signed in but incorrect token test', async() => {
-
+        // Create user
+        const createUserResponse = await request(server.app).post('/user/create').send(MOCK_USER_DATA);
+        expect(createUserResponse.status).toEqual(201);
+        // Sign in user
+        User.findOne = jest.fn().mockReturnValue(MOCK_USER);
+        const data = removeKeysFromDict(MOCK_USER_DATA, ["points", "email"]);
+        bcrypt.compare = jest.fn().mockReturnValueOnce(MOCK_USER_DATA.password == data.password);
+        const signinUserResponse = await request(server.app).post('/user/signin').send(data);
+        expect(signinUserResponse.status).toEqual(200);
+        expect(signinUserResponse.body.token).toBeTruthy();
+        // Try to update with incorrect token
+        const userid = createUserResponse.body.userid;
+        const badToken = "bad token";
+        const updateUserResponse = await request(server.app).put(`/user/update?userid=${userid}`).set('token', badToken);
+        expect(updateUserResponse.status).toEqual(500);
     });
 });
 

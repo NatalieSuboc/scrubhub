@@ -157,7 +157,7 @@ router.put("/update", auth,
         if (!req.query.userid) {
             return res.status(400).json({ message: "No user ID specified" });
         }
-        if (!req.body) {
+        if (!req.body.points && !req.body.password && !req.body.username && !req.body.email) {
             return res.status(400).json({ message: "No fields specified to update"});
         }
 

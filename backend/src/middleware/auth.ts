@@ -11,7 +11,7 @@ module.exports = function (req: Request, res: Response, next: NextFunction) {
     try {
         // "scrubhub" is a randomly chosen string
         const verified = jwt.verify(token, "scrubhub");
-        req.body = verified.body;
+        // req.body = verified.body;
         // NextFunction signals the auth's completion
         next();
 
