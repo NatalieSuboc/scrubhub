@@ -1,6 +1,8 @@
 import React from 'react';
 import './App.css';
 import { Box } from "./components/box";
+import Timer from "./components/pomodoro/Timer";
+import PomodoroTab from './components/pomodoro/PomodoroTab';
 import { useNavigate } from 'react-router-dom';
 
 //import { useState } from 'react';
@@ -31,6 +33,8 @@ export const Home: React.FC = () => {
           <button onClick={gotToTaskList}>Task List </button>
         {/* </header> */}
         <Box/>
+        <br></br>
+        <PomodoroTab/>
       </div>
     );
 };
