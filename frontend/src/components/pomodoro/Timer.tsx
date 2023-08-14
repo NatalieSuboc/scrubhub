@@ -28,7 +28,8 @@ const Timer = (props: ITimerProps) => {
 
   // Reset timer to original value
   const resetTimer = (() => {
-    setTotalSeconds(seconds + minutes * SECONDS_IN_A_MINUTE);
+    setPlay(false);
+    setTimeout(() => setTotalSeconds(seconds + minutes * SECONDS_IN_A_MINUTE), ONE_SECOND);
   });
 
   // TODO The timer is slightly inprecise and will continue the countdown for 1 second
