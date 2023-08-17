@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import '../../stylesheets/pomodoro/Timer.css';
+import './Timer.css';
 
 const ONE_SECOND = 1000;
 const SECONDS_IN_A_MINUTE = 60;

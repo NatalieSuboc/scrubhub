@@ -1,10 +1,11 @@
 import React from 'react';
 import './App.css';
-import { Box } from "./components/box";
+import { Box } from "./components/box/box";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { AboutUs } from "../src/pages/aboutUs";
-import { TaskList } from "../src/pages/taskList";
-import { Home } from "./Home";
+import { AboutUs } from "./pages/aboutUs/aboutUs";
+import { TaskList } from "./pages/taskList/taskList";
+import { Pomodoro } from "./pages/pomodoro/pomodoro";
+import { Home } from "./pages/Home/Home";
 
 //import { useState } from 'react';
 //import axios from 'axios';
@@ -33,6 +34,7 @@ export const App: React.FC = () => {
         <Routes>
           <Route path= "aboutUsPage" element = {<AboutUs/>}/>
           <Route path= "taskListPage" element = {<TaskList/>}/>
+          <Route path= "pomodoroPage" element = {<Pomodoro/>}/>
           <Route path="/" element={<Home/>}/>
         </Routes>
       </Router>

@@ -1,0 +1,18 @@
+
+
+.tab button {
+    align-content: center;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    background-color: blueviolet;
+}
+
+.pomodoro {
+    align-content: center;
+    align-items: center;
+    text-align: center;
+    /* background-color: red; */
+    justify-content: center;
+
+}

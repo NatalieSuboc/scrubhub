@@ -1,8 +1,8 @@
 import React from 'react';
-import './App.css';
-import { Box } from "./components/box";
-import Timer from "./components/pomodoro/Timer";
-import PomodoroTab from './components/pomodoro/PomodoroTab';
+import '../../App.css';
+import { Box } from "../../components/box/box";
+// import Timer from "../../components/pomodoro/Timer";
+// import PomodoroTab from '../../components/pomodoro/PomodoroTab';
 import { useNavigate } from 'react-router-dom';
 
 //import { useState } from 'react';
@@ -23,6 +23,12 @@ export const Home: React.FC = () => {
       // This will navigate to first component
       navigate('taskListPage'); 
     };
+
+    const gotToPomodoro = () => {
+    
+      // This will navigate to first component
+      navigate('pomodoroPage'); 
+    };
     
     return (
       <div className="App">
@@ -31,10 +37,12 @@ export const Home: React.FC = () => {
           <button onClick={goToAboutUs}> About Us </button>
           {/* <a href="aboutUs.html"><button className="btn btn-primary">About Us</button></a> */}
           <button onClick={gotToTaskList}>Task List </button>
+          {/* <a href="aboutUs.html"><button className="btn btn-primary">About Us</button></a> */}
+          <button onClick={gotToPomodoro}>Pomodoro </button>
         {/* </header> */}
         <Box/>
         <br></br>
-        <PomodoroTab/>
+        {/* <PomodoroTab/> */}
       </div>
     );
 };

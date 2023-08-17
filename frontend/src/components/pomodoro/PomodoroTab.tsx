@@ -1,7 +1,7 @@
 import { Tab, Tabs } from '@mui/material';
 import { useState } from 'react';
 import Timer from './Timer';
-import '../../stylesheets/pomodoro/PomodoroTab.css';
+import './PomodoroTab.css';
 
 // Componnent that holds the Pomodoro timer panel
 const PomodoroTab: React.FC = () => {

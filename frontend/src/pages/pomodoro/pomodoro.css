@@ -1,0 +1,22 @@
+.taskPomo {
+    display: flex;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+    flex-direction: row;
+    /* background-color: red; */
+  
+    height: 80vh;
+    align-items: center;
+    overflow-x: visible;
+    /* overflow-y: scroll; */
+  }
+  
+  .taskPomo div {
+    flex-shrink: 0;
+    /* background: blue; */
+    width: 50vw;
+    height: 50%;
+  
+    /* font-weight: 1000; */
+    text-align: center;
+  }
