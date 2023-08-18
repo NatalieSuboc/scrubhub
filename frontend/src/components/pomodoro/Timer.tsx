@@ -3,8 +3,8 @@ import '../../stylesheets/pomodoro/Timer.css';
 
 const ONE_SECOND = 1000;
 const SECONDS_IN_A_MINUTE = 60;
-const snd = new Audio("https://vscode.dev/github/NatalieSuboc/scrubhub/blob/main/frontend/mixkit-signal-alert-771.wav")
-const snd2 = new Audio("https://vscode.dev/github/NatalieSuboc/scrubhub/blob/main/frontend/smartphone_vibrating_alarm_silent-7040.mp3")
+const snd = new Audio("mixkit-signal-alert-771.wav");
+const snd2 = new Audio("smartphone_vibrating_alarm_silent-7040.mp3");
 
 interface ITimerProps {
   minutes: number,
@@ -21,7 +21,11 @@ const Timer = (props: ITimerProps) => {
   useEffect(() => {
         if (!play) { return; }
         if (totalSeconds === 0) {
-          timerDone();
+          try {
+            timerDone();
+          } catch (error) {
+            console.log(error)
+          }
           return;
         }
         setTimeout(() => setTotalSeconds(totalSeconds - 1), ONE_SECOND);
@@ -57,7 +61,11 @@ const Timer = (props: ITimerProps) => {
   });
 
   const timerDone = (() => {
-    snd2.play()
+    try {
+      snd2.play()
+    } catch (error) {
+      console.log(error)
+    }
     return;
   });
 

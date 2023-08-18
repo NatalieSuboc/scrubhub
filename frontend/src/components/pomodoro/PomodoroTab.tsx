@@ -18,6 +18,7 @@ const PomodoroTab: React.FC = () => {
           <Tab label="Work" />
           <Tab label="Break" />
           <Tab label="Long break" />
+          <Tab label="Test" />
         </Tabs>
 
         {/* Tab 1 (Work) */}
@@ -35,6 +36,10 @@ const PomodoroTab: React.FC = () => {
           <Timer minutes={15} seconds={0} />
         )}
 
+        {/* Tab 4 (Test) */}
+        {activeTab === 3 && (
+          <Timer minutes={0} seconds={1} />
+        )}
       </div>
     );
 };
