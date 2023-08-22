@@ -17,7 +17,7 @@ export const Pomodoro: React.FC = () => {
                 <h1>Task List</h1>
                 <p>Sleep</p>
             </div>
-            <div>
+            <div className = "clock">
                 <PomodoroTab/>
             </div>
         </div>
