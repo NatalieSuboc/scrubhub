@@ -1,3 +1,11 @@
+.everything {
+  min-height: 100vh;
+  height: 100%;
+  width: 100%;
+  /* background-color: #1b1c1e; */
+}
+
+
 .App {
   text-align: center;
 }
@@ -35,4 +43,23 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.dark-mode {
+  background-color: #1b1c1d;
+  color: whitesmoke;
+  min-height: 100vh;
+}
+
+.light-mode {
+  background-color: whitesmoke;
+  min-height: 100vh;
+  color: #1b1c1d;
+}
+
+.toggle-mode {
+  display: flex;
+  flex-direction: row;
+  justify-content: right;
+  /* justify-content: right; */
 }

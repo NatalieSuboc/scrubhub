@@ -1,9 +1,12 @@
 import React from 'react';
 import '../../App.css';
+import './Home.css'
 import { Box } from "../../components/box/box";
 // import Timer from "../../components/pomodoro/Timer";
 // import PomodoroTab from '../../components/pomodoro/PomodoroTab';
 import { useNavigate } from 'react-router-dom';
+import { Button } from '@mui/material';
+// import  Button  from "../../components/button/Button";
 
 //import { useState } from 'react';
 //import axios from 'axios';
@@ -33,12 +36,22 @@ export const Home: React.FC = () => {
     return (
       <div className="App">
           <h1>ScrubHub (Temporary Name)</h1>
-          {/* <a href="taskList.html"><button className="btn btn-primary">Task List</button></a> */}
-          <button onClick={goToAboutUs}> About Us </button>
-          {/* <a href="aboutUs.html"><button className="btn btn-primary">About Us</button></a> */}
-          <button onClick={gotToTaskList}>Task List </button>
-          {/* <a href="aboutUs.html"><button className="btn btn-primary">About Us</button></a> */}
-          <button onClick={gotToPomodoro}>Pomodoro </button>
+
+          <Button variant="outlined" className="NavButton" onClick={goToAboutUs}>About Us</Button>
+
+          <Button variant="outlined" className="NavButton" onClick={gotToTaskList}>Task List</Button>
+
+          <Button variant="outlined" className="NavButton" onClick={gotToPomodoro}>Pomodoro</Button>
+          {/* <Button 
+            margin="5px"
+            border="none"
+            color="pink"
+            height = "200px"
+            onClick={() => console.log("You clicked on the pink circle!")}
+            // radius = "50%"
+            width = "200px"
+            children = "I'm a pink circle!"
+          /> */}
         {/* </header> */}
         <Box/>
         <br></br>

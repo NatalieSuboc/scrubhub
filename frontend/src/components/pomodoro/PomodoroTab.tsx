@@ -9,6 +9,14 @@ import './PomodoroTab.css';
 const PomodoroTab: React.FC = () => {
 
   const [activeTab, setActiveTab] = useState(0);
+  // const getTimeDays = ({time}: {time: number}) => (time / 60) | 0;
+  const twentyFiveMinutes = 1500;
+  const fiveMinutes = 300;
+  const fifteenMinutes = 900;
+  function getTimeDays (time: number) {
+    return time / 60 | 0;
+  }
+
 
   const handleTabChange = (e: any, i: number) => {
     setActiveTab(i);
@@ -24,25 +32,52 @@ const PomodoroTab: React.FC = () => {
 
         {/* Tab 1 (Work) */}
         {activeTab === 0 && (
-          // <Timer minutes={25} seconds={0} />
           <CountdownCircleTimer
           isPlaying
-          duration={10}
+          duration={twentyFiveMinutes}
           colors={["#004777", "#F7B801", "#A30000", "#A30000"]}
           colorsTime={[10, 6, 3, 0]}
           >
-          {TimerGraphic}
-        </CountdownCircleTimer>
+            {({ elapsedTime, color }) => (
+              <span style={{ color }}>
+                {TimerGraphic(twentyFiveMinutes - elapsedTime)}
+              </span>
+            )}
+          </CountdownCircleTimer>
         )}
 
         {/* Tab 2 (Break) */}
         {activeTab === 1 && (
-          <Timer minutes={5} seconds={0} />
+          // <Timer minutes={5} seconds={0} />
+          <CountdownCircleTimer
+          isPlaying
+          duration={fiveMinutes}
+          colors={["#004777", "#F7B801", "#A30000", "#A30000"]}
+          colorsTime={[10, 6, 3, 0]}
+          >
+            {({ elapsedTime, color }) => (
+              <span style={{ color }}>
+                {TimerGraphic(fiveMinutes - elapsedTime)}
+              </span>
+            )}
+          </CountdownCircleTimer>
         )}
 
         {/* Tab 3 (Long break) */}
         {activeTab === 2 && (
-          <Timer minutes={15} seconds={0} />
+          // <Timer minutes={15} seconds={0} />
+          <CountdownCircleTimer
+          isPlaying
+          duration={fifteenMinutes}
+          colors={["#004777", "#F7B801", "#A30000", "#A30000"]}
+          colorsTime={[10, 6, 3, 0]}
+          >
+            {({ elapsedTime, color }) => (
+              <span style={{ color }}>
+                {TimerGraphic(fifteenMinutes - elapsedTime)}
+              </span>
+            )}
+          </CountdownCircleTimer>
         )}
 
       </div>

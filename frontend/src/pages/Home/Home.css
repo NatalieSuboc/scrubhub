@@ -1,0 +1,8 @@
+/* .NavButton {
+    margin: 10px;
+} */
+
+.NavButton:hover {
+    background-color: lightsteelblue;
+    fill-opacity: 50%;
+}
